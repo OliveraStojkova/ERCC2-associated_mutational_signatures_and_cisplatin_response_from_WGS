@@ -1,0 +1,44 @@
+#!/bin/bash
+#PBS -N bwa_alignment
+#PBS -W group_list=pr_46630 -A pr_46630
+#PBS -l nodes=2:ppn=16,mem=98gb,walltime=150:00:00
+#PBS -j oe
+#PBS -o /home/projects/pr_46630/data/Olivera_work/new_samples_thesis/alignment/bwa_alignment.log
+#PBS -e /home/projects/pr_46630/data/Olivera_work/new_samples_thesis/alignment/bwa_alignment.err
+
+# Load modules
+module load tools
+module load ngs tools
+module load java/1.7.0
+module load perl
+module load gatk/3.8-0
+module load bwa/0.7.17
+module load samtools/1.7
+
+# Define directories
+REF_DIR="/home/projects/pr_46630/data/references/gdc_grch38"
+SAMPLE_DIR="/home/projects/pr_46630/data/Olivera_work/new_samples_thesis/filtered_samples"
+OUTPUT_DIR="/home/projects/pr_46630/data/Olivera_work/new_samples_thesis/alignment"
+SAM_DIR="$OUTPUT_DIR/sam_files"
+BAM_DIR="$OUTPUT_DIR/bam_files"
+SORTED_BAM_DIR="$OUTPUT_DIR/sorted_bam_files"
+
+mkdir -p $OUTPUT_DIR $SAM_DIR $BAM_DIR $SORTED_BAM_DIR
+
+# Reference genome 
+REF_GENOME="$REF_DIR/GRCh38.d1.vd1.fa"
+
+# Align all samples
+for fq1 in $SAMPLE_DIR/*_R1_paired.fastq.gz; do
+    fq2=${fq1/_R1_paired.fastq.gz/_R2_paired.fastq.gz}
+    sample_name=$(basename $fq1 _R1_paired.fastq.gz)
+
+echo "Processing sample: $sample_name"
+    bwa mem -t 8 $REF_GENOME $fq1 $fq2 > $SAM_DIR/${sample_name}.sam
+    samtools view -bS $SAM_DIR/${sample_name}.sam > $BAM_DIR/${sample_name}.bam
+    samtools sort -o $SORTED_BAM_DIR/${sample_name}.sorted.bam $BAM_DIR/${sample_name}.bam
+    samtools index $SORTED_BAM_DIR/${sample_name}.sorted.bam
+    echo "Finished sample: $sample_name"
+done
+
+
