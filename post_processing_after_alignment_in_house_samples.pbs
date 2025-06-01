@@ -1,10 +1,4 @@
 #!/bin/bash
-#PBS -N variant_processing
-#PBS -W group_list=pr_46630 -A pr_46630
-#PBS -j oe
-#PBS -o /home/projects/pr_46630/data/Olivera_work/new_samples_thesis/alignment/variant_post_processing.log
-#PBS -e /home/projects/pr_46630/data/Olivera_work/new_samples_thesis/alignment/variant_post_processing.err
-#PBS -l nodes=1:ppn=40,walltime=200:00:00,mem=156gb
 
 # Load modules
 module load tools
