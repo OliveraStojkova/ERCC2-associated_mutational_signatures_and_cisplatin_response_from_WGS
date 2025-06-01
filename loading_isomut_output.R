@@ -52,11 +52,13 @@ chr22_indel <- read.delim("isomut_workin_output_13_samples/all_indels22.isomut",
 
 all_indels <- rbind(chr1_indel, chr2_indel, chr3_indel, chr4_indel, chr5_indel, chr6_indel, chr7_indel, chr8_indel, chr9_indel, chr10_indel, chr11_indel, chr12_indel, chr13_indel, chr14_indel, chr15_indel, chr16_indel, chr17_indel, chr18_indel, chr19_indel, chr20_indel, chr21_indel, chr22_indel)
 
+# Collect all output in one dataframe
 isomut_output <- rbind(all_snvs, all_indels)
 
 colnames(isomut_output)[which(colnames(isomut_output) == "X.sample_name")] <- "sample_name"
 isomut_output <- isomut_output %>% mutate(sample_name = gsub("\\.bam$", "", sample_name))
 
+# Rename the samples
 isomut_output <- isomut_output %>%
   mutate(sample_name = case_when(
     sample_name == "Sample_1" ~ "wt_0.5cis_4w",
@@ -74,3 +76,14 @@ isomut_output <- isomut_output %>%
     sample_name == "Sample_13" ~ "mut_untreated_2",
     TRUE ~ sample_name  # keep other names as they are
   ))
+
+# Add start and end positions for each mutation
+isomut_output <- isomut_output %>%
+  mutate(pos = as.numeric(pos),
+         start = pos,
+         end = case_when(
+           type == "SNV" ~ pos,
+           type == "INS" ~ pos + nchar(mut),  
+           type == "DEL" ~ pos + nchar(ref) - 1,
+           TRUE ~ pos
+         ))
