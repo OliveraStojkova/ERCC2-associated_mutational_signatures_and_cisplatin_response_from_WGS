@@ -55,5 +55,26 @@ ggplot(cos_sim_df_dbs_treated, aes(x = Sample, y = Cosine_Similarity)) +
     panel.grid.major = element_blank(),  
     panel.grid.minor = element_blank())
 
+### Absolute contribution plot
+# Reconstruct full mutation matrix from signature * contribution
+reconstructed_dbs <- nmf_res_dbs_treated$signatures %*% nmf_res_dbs_treated$contribution
 
-                                                                         
+# Total mutations per sample 
+total_mutations_per_sample_dbs <- colSums(reconstructed_dbs)
+
+# Normalize contributions to reflect total mutation counts
+scaled_contributions_dbs <- apply(nmf_res_dbs_treated$contribution, 2, function(x) {
+  total <- sum(x)
+  if (total == 0) return(x)
+  x / total
+})  
+
+# Multiply by actual total mutations
+contribution_absolute_dbs <- sweep(scaled_contributions_dbs, 2, total_mutations_per_sample_dbs, `*`)
+
+# Plot with mutation counts
+plot_contribution(contribution_absolute_dbs, nmf_res_dbs_treated$signatures,
+  mode = "absolute", palette = dbs_palette[c(28, 6)]
+) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
