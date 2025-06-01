@@ -25,3 +25,18 @@ summary_stats <- combined_counts %>%
     .groups = 'drop'
   ) %>%
   mutate(across(where(is.numeric), round, 2))
+
+# Plot total number of mutations per sample
+mutation_counts_all_long <- mutation_counts_all %>%
+  mutate(sample_name = factor(sample_name, levels = ordered_samples))
+
+ggplot(mutation_counts_all_long, aes(x = sample_name, 
+                                y = num_mutations)) +
+  geom_col(fill = color_palette[2]) +
+  geom_hline(yintercept = mean(mutation_counts_all$num_mutations), color = "black", linetype = "dashed")+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 11), panel.grid.major = element_blank(),  
+    panel.grid.minor = element_blank()) +
+  xlab(" ") +
+  ylab("Mutation count")
+
