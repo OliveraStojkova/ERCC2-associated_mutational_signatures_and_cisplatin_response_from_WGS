@@ -1,11 +1,3 @@
-#!/bin/bash
-#PBS -N bwa_alignment
-#PBS -W group_list=pr_46630 -A pr_46630
-#PBS -l nodes=2:ppn=16,mem=98gb,walltime=150:00:00
-#PBS -j oe
-#PBS -o /home/projects/pr_46630/data/Olivera_work/new_samples_thesis/alignment/bwa_alignment.log
-#PBS -e /home/projects/pr_46630/data/Olivera_work/new_samples_thesis/alignment/bwa_alignment.err
-
 # Load modules
 module load tools
 module load ngs tools
