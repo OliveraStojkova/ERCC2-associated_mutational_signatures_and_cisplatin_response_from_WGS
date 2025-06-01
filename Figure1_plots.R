@@ -4,7 +4,7 @@ color_palette <- paletteer_d("RColorBrewer::RdGy")
 new_color_palette <- paletteer_c("ggthemes::Red-Black Diverging", 30)
 c_palette <- paletteer_c("grDevices::Fall", 30)
 
-# Total number of mutations per sample plot
+# Total number of mutations per sample plot - mutation_counts_by_type generated in summary_statistics.R 
 mutation_counts_all_long <- mutation_counts_all %>%
   mutate(sample_name = factor(sample_name, levels = ordered_samples))
 
@@ -19,7 +19,7 @@ ggplot(mutation_counts_all_long, aes(x = sample_name,
   ylab("Mutation count")
 
 
-# INS/DEL counts plot
+# INS/DEL counts plot - mutation_counts_by_type generated in summary_statistics.R 
 mutation_counts_by_type_ins_del <- mutation_counts_by_type %>% filter(type %in% c("INS", "DEL"))
 mutation_counts_by_type_ins_del$sample_name <- factor(mutation_counts_by_type_ins_del$sample_name,
                                                levels = unique(mutation_counts_by_type_ins_del$sample_name))
@@ -44,4 +44,29 @@ ggplot(indel_long, aes(x = sample_name, y = num_mutations, fill = type)) +
     panel.grid.major = element_blank(),  
     panel.grid.minor = element_blank(),
     legend.position = c(0.9, 0.85)
+  )
+
+# DBS counts plot - dbs_matrix generated in SBS_DBS_INDEL_mutational_matrices.R
+total_dbs <- colSums(dbs_matrix) 
+
+df_dbs <- data.frame(
+  Sample = names(total_dbs),
+  DBS_Count = as.numeric(total_dbs)
+)
+
+df_dbs <- df_dbs %>%
+  mutate(Sample = factor(Sample, levels = ordered_samples))
+
+ggplot(df_dbs, aes(x = Sample, y = DBS_Count)) +
+  geom_bar(stat = "identity", fill = color_palette[4]) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.title = element_blank(),
+    panel.grid.major = element_blank(),  
+    panel.grid.minor = element_blank(),
+    legend.position = c(0.9, 0.85)
+  ) + labs(
+    x = "Sample",
+    y = "DBS Count"
   )
