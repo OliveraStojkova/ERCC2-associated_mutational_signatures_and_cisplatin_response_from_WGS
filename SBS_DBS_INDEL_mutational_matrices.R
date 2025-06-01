@@ -1,3 +1,5 @@
+library(MutationalPatterns)
+
 # Rename columns to match the required input 
 colnames(isomut_output)[which(colnames(isomut_output) == "ref")] <- "REF"
 colnames(isomut_output)[which(colnames(isomut_output) == "mut")] <- "ALT"
