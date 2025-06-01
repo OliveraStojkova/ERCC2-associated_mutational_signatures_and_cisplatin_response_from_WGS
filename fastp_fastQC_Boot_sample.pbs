@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Quality control was performed on only one sample from the Boot et al. study
+
 # Move to working directory
 cd $PBS_O_WORKDIR
 
