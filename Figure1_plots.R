@@ -3,6 +3,7 @@ library(paletteer)
 color_palette <- paletteer_d("RColorBrewer::RdGy")
 new_color_palette <- paletteer_c("ggthemes::Red-Black Diverging", 30)
 c_palette <- paletteer_c("grDevices::Fall", 30)
+dbs_palette <- paletteer_c("grDevices::Lajolla", 30)
 
 #### Total number of mutations per sample plot - mutation_counts_by_type generated in summary_statistics.R 
 mutation_counts_all_long <- mutation_counts_all %>%
