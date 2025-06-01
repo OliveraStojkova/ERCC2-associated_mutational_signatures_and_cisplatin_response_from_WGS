@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# download
+git clone https://github.com/genomicshu/isomut.git
+cd isomut/src
+
+# compile
+gcc -c -O3 isomut_lib.c fisher.c  -W -Wall
+gcc -O3 -o isomut isomut.c isomut_lib.o  fisher.o -lm -W -Wall
+
+cd ../..
