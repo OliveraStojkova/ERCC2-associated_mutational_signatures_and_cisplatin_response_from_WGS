@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This code shows the alignment of the in-house generated samples.
+# The same procedure was applied to the samples from the Boot et al. study
+
 # Load modules
 module load tools
 module load ngs tools
