@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This code shows the post-processing steps of the in-house generated samples.
+# The same steps and procedure was applied to the samples from the Boot et al. study
+
 # Load modules
 module load tools
 module load ngs tools
