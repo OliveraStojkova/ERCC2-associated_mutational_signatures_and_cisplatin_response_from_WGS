@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# Isomut was ran chromosome by chromosome (only for the autosomes) for all 13 samples
+# the code here shows running IsoMut for the 1st chromosome
+
+# Load modules
+module load tools                  
+module load samtools/1.7               
+module load python2
+
+# Activate Python virtual environment
+source /home/people/judbor/isomut_py2env/bin/activate
+
+python
+
+import os
+import sys
+import subprocess
+import multiprocessing
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Import IsoMut wrapper
+sys.path.append('/home/projects/pr_46630/people/judbor/mytools/isomut/src')
+from isomut_wrappers import run_isomut
+
+# Add IsoMut binary to PATH
+os.environ["PATH"] += os.pathsep + '/home/projects/pr_46630/people/judbor/mytools/isomut/src'
+
+# Common parameters
+base_params = dict()
+base_params['n_min_block'] = 100
+base_params['n_conc_blocks'] = 1
+base_params['ref_fasta'] = "/home/projects/pr_46630/data/references/gdc_grch38/GRCh38.d1.vd1.fa"
+base_params['input_dir'] = '/home/projects/pr_46630/data/Olivera_work/isomut_input_files/'
+base_output_dir = '/home/projects/pr_46630/people/judbor/Olivera_thesis/isomut_results_chrom/'
+
+# BAM files
+base_params['bam_filenames'] = ['Sample_1.bam', 'Sample_2.bam', 'Sample_3.bam', 'Sample_4.bam', 'Sample_5.bam', 'Sample_6.bam', 'Sample_7.bam', 
+'Sample_8.bam', 'Sample_9.bam', 'Sample_10.bam', 'Sample_11.bam', 'Sample_12.bam', 'Sample_13.bam'
+]
+
+# Mutation calling thresholds
+base_params['min_sample_freq'] = 0.21
+base_params['min_other_ref_freq'] = 0.93
+base_params['cov_limit'] = 5
+base_params['base_quality_limit'] = 30
+base_params['min_gap_dist_snv'] = 0
+base_params['min_gap_dist_indel'] = 20
+
+# Chromosome list
+chrom_list = ['chr' + str(i) for i in range(1, 23)] + ['chrX', 'chrY']
+
+# This runs isomut on the 1st chromosome, chage it to run on another chromosome
+chrom = chrom_list[1] 
+
+params = base_params.copy()
+params['chromosomes'] = [chrom]
+params['output_dir'] = os.path.join(base_output_dir, chrom)
+
+if not os.path.exists(params['output_dir']):
+	os.makedirs(params['output_dir'])
+
+try:
+	print("Running IsoMut for", chrom)
+	run_isomut(params)
+	print("Finished IsoMut for", chrom)
+except Exception as e:
+	print("Error running IsoMut on", chrom, ":", e)
